@@ -24,10 +24,14 @@ private:
 protected:
     StackItem& topItem() const { return top_; }
     StackItem& bottomItem() const { return bottom_; }
-    std::vector <Type> getArray(const PriorityStack& stack) {
-        std::vector <Type> temp(stack.size());
-        //TODO
-        return;
+    std::vector <Type> getArray() const {
+        std::vector <Type> vec;
+        StackItem* temp = bottom_;
+        do {
+            vec.push_back(temp->data);
+            temp = temp->next;
+        } while (temp != nullptr);
+        return vec;
     }
 
 
@@ -136,7 +140,16 @@ public:
         return;
     }
     friend std::ostream& operator<< (std::ostream& out, const PriorityStack& stack) {
-        //TODO
+        if (stack.isEmpty()) {
+            out << "Список пуст";
+            return out;
+        }
+        std::vector <Type> vec;
+        vec = stack.getArray();
+        out << "[";
+        for (auto i = 0; i < vec.size() - 1; i++)
+            out << vec[i] << ", ";
+        out << vec.back() << "]";
         return out;
     }
 
@@ -158,6 +171,6 @@ int main() {
     PriorityStack <std::string> stack1;
     stack1 = stack;
     stack.clear();
-    std::cout << stack1[2];
+    std::cout << stack1;
     return 0;
 }
