@@ -24,20 +24,6 @@ private:
 protected:
     StackItem& topItem() const { return top_; }
     StackItem& bottomItem() const { return bottom_; }
-    void push(int priority, const Type& data) {
-        try {
-            StackItem* temp = new StackItem;
-            temp->priority = priority, temp->data = data;
-            if (!top_)
-                top_ = bottom_ = temp;
-            else
-                temp->last = top_, top_->next = temp, top_ = temp;
-            size_++;
-        }
-        catch (const std::bad_alloc& error) {
-            std::cout << "Error: " << error.what() << std::endl;
-        }
-    }
     std::vector <Type> getArray(const PriorityStack& stack) {
         std::vector <Type> temp(stack.size());
         //TODO
@@ -58,10 +44,33 @@ public:
     int size() const { return size_; }
     Type top() const { return top_.data; }
     Type bottom() const { return bottom_.data; }
+    void push(int priority, const Type& data) {
+        try {
+            StackItem* temp = new StackItem;
+            temp->priority = priority, temp->data = data;
+            if (!top_)
+                top_ = bottom_ = temp;
+            else
+                temp->last = top_, top_->next = temp, top_ = temp;
+            size_++;
+        }
+        catch (const std::bad_alloc& error) {
+            std::cout << "Error: " << error.what() << std::endl;
+        }
+    }
     Type pop() {
         if (isEmpty()) throw new std::exception("The stack is empty");
-        //TODO
-        return;
+        StackItem* temp = top_;
+        Type data = temp->data;
+        size_--;
+        if (top_ == bottom_) {
+            delete temp;
+            top_ = bottom_ = nullptr;
+            return data;
+        }
+        top_ = temp->last, top_->next = nullptr;
+        delete temp;
+        return data;
     }
     Type popMaxPriority() {
         if (isEmpty()) throw new std::exception("The stack is empty");
@@ -115,6 +124,12 @@ public:
 
 int main() {
     PriorityStack <std::string> stack;
+    stack.push(10, "Hello world!");
+    stack.push(3, "I'm Daniil");
+    stack.push(4, "and I'm programmist");
+    std::cout << stack.pop() << std::endl;
+    std::cout << stack.pop() << std::endl;
+    std::cout << stack.pop() << std::endl;
 
     return 0;
 }
