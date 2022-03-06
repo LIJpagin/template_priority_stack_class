@@ -37,7 +37,11 @@ public:
     PriorityStack(const PriorityStack& that) {
         size_ = 0, top_ = bottom_ = nullptr;
         if (that.isEmpty()) return;
-        //TODO 
+        StackItem* temp = that.bottom_;
+        do {
+            this->push(temp->data);
+            temp = temp->next;
+        } while (temp != that.top_);
     }
 
     bool isEmpty() const { return (!(bool)size_); }
@@ -57,6 +61,9 @@ public:
         catch (const std::bad_alloc& error) {
             std::cout << "Error: " << error.what() << std::endl;
         }
+    }
+    Type pop() {
+        return popMaxPriority();
     }
     Type popMaxPriority() {
         if (isEmpty()) throw new std::exception("The stack is empty");
