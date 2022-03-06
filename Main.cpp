@@ -58,7 +58,7 @@ public:
             std::cout << "Error: " << error.what() << std::endl;
         }
     }
-    Type pop() {
+    Type popMaxPriority() {
         if (isEmpty()) throw new std::exception("The stack is empty");
         StackItem* temp = top_;
         Type data = temp->data;
@@ -72,15 +72,19 @@ public:
         delete temp;
         return data;
     }
-    Type popMaxPriority() {
-        if (isEmpty()) throw new std::exception("The stack is empty");
-        //TODO
-        return;
-    }
     Type popMinPriority() {
         if (isEmpty()) throw new std::exception("The stack is empty");
-        //TODO
-        return;
+        StackItem* temp = bottom_;
+        Type data = temp->data;
+        size_--;
+        if (top_ == bottom_) {
+            delete temp;
+            top_ = bottom_ = nullptr;
+            return data;
+        }
+        bottom_ = temp->next, bottom_->last = nullptr;
+        delete temp;
+        return data;
     }
     void clear() {
         //TODO
@@ -127,9 +131,9 @@ int main() {
     stack.push(10, "Hello world!");
     stack.push(3, "I'm Daniil");
     stack.push(4, "and I'm programmist");
-    std::cout << stack.pop() << std::endl;
-    std::cout << stack.pop() << std::endl;
-    std::cout << stack.pop() << std::endl;
+    std::cout << stack.popMinPriority() << std::endl;
+    std::cout << stack.popMinPriority() << std::endl;
+    std::cout << stack.popMinPriority() << std::endl;
 
     return 0;
 }
