@@ -39,9 +39,9 @@ public:
         if (that.isEmpty()) return;
         StackItem* temp = that.bottom_;
         do {
-            this->push(temp->data);
+            this->push(temp->priority, temp->data);
             temp = temp->next;
-        } while (temp != that.top_);
+        } while (temp != nullptr);
     }
 
     bool isEmpty() const { return (!(bool)size_); }
@@ -55,7 +55,7 @@ public:
             if (!top_)
                 top_ = bottom_ = temp;
             else
-                temp->last = top_, top_->next = temp, top_ = temp;
+                top_->next = temp, temp->last = top_, top_ = temp;
             size_++;
         }
         catch (const std::bad_alloc& error) {
@@ -147,7 +147,8 @@ int main() {
     PriorityStack <std::string> stack;
     stack.push(10, "Hello world!");
     stack.push(3, "I'm Daniil");
-    stack.push(4, "and I'm programmist");
+    stack.push(4, "and I'm programmer");
+    PriorityStack <std::string> stack1 = stack;
     stack.clear();
 
     return 0;
