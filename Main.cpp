@@ -109,8 +109,11 @@ public:
 
     Type& operator[](int index) {
         if (isEmpty()) throw new std::exception("The stack is empty");
-        //TODO
-        return;
+        if (index < 0 || index > size() - 1) throw new std::exception("Going beyond the stack");
+        StackItem* temp = bottom_;
+        for (auto i = 0; i < index; i++)
+            temp = temp->next;
+        return temp->data;
     }
     PriorityStack& operator()(int priority) {
         if (isEmpty()) throw new std::exception("The stack is empty");
@@ -150,6 +153,6 @@ int main() {
     stack.push(4, "and I'm programmer");
     PriorityStack <std::string> stack1 = stack;
     stack.clear();
-
+    std::cout << stack1[2];
     return 0;
 }
