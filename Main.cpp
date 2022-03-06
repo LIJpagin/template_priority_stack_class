@@ -87,7 +87,17 @@ public:
         return data;
     }
     void clear() {
-        //TODO
+        while (top_ != bottom_) {
+            StackItem* temp = top_;
+            top_ = temp->last;
+            delete temp;
+        }
+        if (top_ == bottom_) {
+            StackItem* temp = top_;
+            delete temp;
+            top_ = bottom_ = nullptr;
+        }
+        size_ = 0;
     }
 
     Type& operator[](int index) {
@@ -131,9 +141,7 @@ int main() {
     stack.push(10, "Hello world!");
     stack.push(3, "I'm Daniil");
     stack.push(4, "and I'm programmist");
-    std::cout << stack.popMinPriority() << std::endl;
-    std::cout << stack.popMinPriority() << std::endl;
-    std::cout << stack.popMinPriority() << std::endl;
+    stack.clear();
 
     return 0;
 }
