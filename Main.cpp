@@ -6,9 +6,9 @@ template <typename Type>
 class PriorityStack {
 private:
     struct StackItem {
-        int priority;
+        int priority = 0;
         Type data;
-        StackItem* next, * last;
+        StackItem* next = nullptr, * last = nullptr;
         bool operator< (const StackItem& right) const {
             return priority < right.priority;
         }
@@ -24,8 +24,22 @@ private:
 protected:
     StackItem& topItem() const { return top_; }
     StackItem& bottomItem() const { return bottom_; }
+    void push(int priority, const Type& data) {
+        try {
+            StackItem* temp = new StackItem;
+            temp->priority = priority, temp->data = data;
+            if (!top_)
+                top_ = bottom_ = temp;
+            else
+                temp->last = top_, top_->next = temp, top_ = temp;
+            size_++;
+        }
+        catch (const std::bad_alloc& error) {
+            std::cout << "Error: " << error.what() << std::endl;
+        }
+    }
     std::vector <Type> getArray(const PriorityStack& stack) {
-        vector <Type> temp(stack.size());
+        std::vector <Type> temp(stack.size());
         //TODO
         return;
     }
@@ -35,7 +49,7 @@ protected:
 public:
     PriorityStack() : size_(0), top_(nullptr), bottom_(nullptr) { }
     PriorityStack(const PriorityStack& that) {
-        top_ = bottom_ = nullptr;
+        size_ = 0, top_ = bottom_ = nullptr;
         if (that.isEmpty()) return;
         //TODO 
     }
@@ -44,9 +58,6 @@ public:
     int size() const { return size_; }
     Type top() const { return top_.data; }
     Type bottom() const { return bottom_.data; }
-    void push(int priority, const Type& data) {
-        //TODO
-    }
     Type pop() {
         if (isEmpty()) throw new std::exception("The stack is empty");
         //TODO
