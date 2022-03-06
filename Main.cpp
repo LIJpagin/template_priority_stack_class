@@ -121,11 +121,15 @@ public:
         return;
     }
     PriorityStack& operator= (const PriorityStack& that) {
-        if (this == that) return *this;
+        if (this == &that) return *this;
         this->clear();
         if (that.isEmpty()) return *this;
-        //TODO
-        return;
+        StackItem* temp = that.bottom_;
+        do {
+            this->push(temp->priority, temp->data);
+            temp = temp->next;
+        } while (temp != nullptr);
+        return *this;
     }
     friend PriorityStack operator+ (const PriorityStack& left, const PriorityStack& right) {
         //TODO
@@ -136,12 +140,12 @@ public:
         return out;
     }
 
-    friend bool operator> (const StackItem& left, const StackItem& right) { return (left.size() > right.size()); }
-    friend bool operator< (const StackItem& left, const StackItem& right) { return (left.size() < right.size()); }
-    friend bool operator== (const StackItem& left, const StackItem& right) { return (left.size() == right.size()); }
-    friend bool operator!= (const StackItem& left, const StackItem& right) { return (left.size() != right.size()); }
-    friend bool operator>= (const StackItem& left, const StackItem& right) { return (left.size() >= right.size()); }
-    friend bool operator<= (const StackItem& left, const StackItem& right) { return (left.size() <= right.size()); }
+    friend bool operator> (const PriorityStack& left, const PriorityStack& right) { return (left.size() > right.size()); }
+    friend bool operator< (const PriorityStack& left, const PriorityStack& right) { return (left.size() < right.size()); }
+    friend bool operator== (const PriorityStack& left, const PriorityStack& right) { return (left.size() == right.size()); }
+    friend bool operator!= (const PriorityStack& left, const PriorityStack& right) { return (left.size() != right.size()); }
+    friend bool operator>= (const PriorityStack& left, const PriorityStack& right) { return (left.size() >= right.size()); }
+    friend bool operator<= (const PriorityStack& left, const PriorityStack& right) { return (left.size() <= right.size()); }
 
     ~PriorityStack() { clear(); }
 };
@@ -151,7 +155,8 @@ int main() {
     stack.push(10, "Hello world!");
     stack.push(3, "I'm Daniil");
     stack.push(4, "and I'm programmer");
-    PriorityStack <std::string> stack1 = stack;
+    PriorityStack <std::string> stack1;
+    stack1 = stack;
     stack.clear();
     std::cout << stack1[2];
     return 0;
