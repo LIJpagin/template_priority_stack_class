@@ -118,10 +118,19 @@ public:
             temp = temp->next;
         return temp->data;
     }
-    PriorityStack& operator()(int priority) {
+    PriorityStack operator()(int priority) {
         if (isEmpty()) throw new std::exception("The stack is empty");
-        //TODO
-        return;
+        PriorityStack temp;
+        StackItem* stackptr = bottom_;
+        while (stackptr != nullptr) {
+            if (stackptr->priority == priority) {
+                temp.push(stackptr->priority, stackptr->data);
+                if ((stackptr->next)->priority != priority)
+                    return temp;
+            }
+            stackptr = stackptr->next;
+        }
+        return temp;
     }
     PriorityStack& operator= (const PriorityStack& that) {
         if (this == &that) return *this;
@@ -189,6 +198,6 @@ int main() {
     stack.push(3, -1);
     PriorityStack <int> stack1 = stack;
     stack = stack + stack1;
-    std::cout << stack << std::endl;
+    std::cout << stack(3) << std::endl;
     return 0;
 }
