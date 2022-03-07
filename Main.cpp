@@ -9,30 +9,9 @@ private:
         int priority = 0;
         Type data;
         StackItem* next = nullptr, * last = nullptr;
-        bool operator< (const StackItem& right) const {
-            return priority < right.priority;
-        }
-        bool operator> (const StackItem& right) const {
-            return priority > right.priority;
-        }
     };
     StackItem* top_, * bottom_;
     long size_;
-
-
-
-protected:
-    StackItem& topItem() const { return top_; }
-    StackItem& bottomItem() const { return bottom_; }
-    std::vector <Type> getArray() const {
-        std::vector <Type> vec;
-        StackItem* temp = bottom_;
-        do {
-            vec.push_back(temp->data);
-            temp = temp->next;
-        } while (temp != nullptr);
-        return vec;
-    }
 
 
 
@@ -55,12 +34,32 @@ public:
     void push(int priority, const Type& data) {
         try {
             StackItem* temp = new StackItem;
-            temp->priority = priority, temp->data = data;
+            temp->priority = priority, temp->data = data, size_++;
             if (!top_)
                 top_ = bottom_ = temp;
-            else
+            else {
+                StackItem* stackptr = bottom_;
+                while (stackptr != nullptr) {
+                    if (temp->priority <= stackptr->priority) {
+                        if (stackptr == bottom_) {
+                            bottom_->last = temp;
+                            temp->next = bottom_;
+                            bottom_ = temp;
+                        }
+                        else {
+                            temp->last = stackptr->last;
+                            stackptr->last = temp;
+                            temp->next = stackptr;
+                            stackptr = temp->last;
+                            stackptr->next = temp;
+                        }
+                        return;
+                    }
+                    stackptr = stackptr->next;
+                }
+                // if the inserted element has the maximum priority from the entire stack
                 top_->next = temp, temp->last = top_, top_ = temp;
-            size_++;
+            }
         }
         catch (const std::bad_alloc& error) {
             std::cout << "Error: " << error.what() << std::endl;
@@ -136,20 +135,35 @@ public:
         return *this;
     }
     friend PriorityStack operator+ (const PriorityStack& left, const PriorityStack& right) {
-        //TODO
-        return;
+        PriorityStack stack;
+        if (left.isEmpty() && right.isEmpty())
+            return stack;
+        if (left.isEmpty()) {
+            stack = right;
+            return stack;
+        }
+        if (right.isEmpty()) {
+            stack = left;
+            return stack;
+        }
+        stack = left;
+        StackItem* temp = right.top_;
+        while (temp != nullptr) {
+            stack.push(temp->priority, temp->data);
+            temp = temp->last;
+        }
+        return stack;
     }
     friend std::ostream& operator<< (std::ostream& out, const PriorityStack& stack) {
         if (stack.isEmpty()) {
-            out << "Список пуст";
+            out << "Stack is empty";
             return out;
         }
-        std::vector <Type> vec;
-        vec = stack.getArray();
+        StackItem* temp = stack.bottom_;
         out << "[";
-        for (auto i = 0; i < vec.size() - 1; i++)
-            out << vec[i] << ", ";
-        out << vec.back() << "]";
+        while (temp->next != nullptr)
+            out << temp->data << ", ", temp = temp->next;
+        out << temp->data << "]";
         return out;
     }
 
@@ -164,13 +178,17 @@ public:
 };
 
 int main() {
-    PriorityStack <std::string> stack;
-    stack.push(10, "Hello world!");
-    stack.push(3, "I'm Daniil");
-    stack.push(4, "and I'm programmer");
-    PriorityStack <std::string> stack1;
-    stack1 = stack;
-    stack.clear();
-    std::cout << stack1;
+    PriorityStack <int> stack;
+    stack.push(1, 100);
+    stack.push(3, 4);
+    stack.push(4, 10);
+    stack.push(-10, 60);
+    stack.push(50, 8);
+    stack.push(3, 1);
+    stack.push(3, 7);
+    stack.push(3, -1);
+    PriorityStack <int> stack1 = stack;
+    stack = stack + stack1;
+    std::cout << stack << std::endl;
     return 0;
 }
