@@ -31,11 +31,11 @@ public:
     int size() const {
         return size_;
     }
-    Type& top() const {
-        return top_.data;
+    Type top() const {
+        return top_->data;
     }
-    Type& bottom() const {
-        return bottom_.data;
+    Type bottom() const {
+        return bottom_->data;
     }
     void push(int priority, const Type& data) {
         try {
@@ -46,7 +46,7 @@ public:
             else {
                 StackItem* stackptr = bottom_;
                 while (stackptr != nullptr) {
-                    if (temp->priority <= stackptr->priority) {
+                    if (temp->priority < stackptr->priority) {
                         if (stackptr == bottom_) {
                             bottom_->last = temp;
                             temp->next = bottom_;
@@ -71,10 +71,10 @@ public:
             std::cout << "Error: " << error.what() << std::endl;
         }
     }
-    Type& pop() {
+    Type pop() {
         return popMaxPriority();
     }
-    Type& popMaxPriority() {
+    Type popMaxPriority() {
         if (isEmpty()) throw new std::exception("The stack is empty");
         StackItem* temp = top_;
         Type data = temp->data;
@@ -88,7 +88,7 @@ public:
         delete temp;
         return data;
     }
-    Type& popMinPriority() {
+    Type popMinPriority() {
         if (isEmpty()) throw new std::exception("The stack is empty");
         StackItem* temp = bottom_;
         Type data = temp->data;
