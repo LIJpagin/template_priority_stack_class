@@ -139,7 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Example.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PriorityStack.h" />
